@@ -55,7 +55,7 @@ Define how your data will come in using these methods:
       <iron-icon icon="fa:fa-times"
                  class="px-context-browser-typeahead-close-icon"
                  on-click="clearSearchTerm"
-                 hidden$="{{hideCloseButton}}">
+                 hidden$="{{hideClearButton}}">
       </iron-icon>
     </div>
   </template>
@@ -82,13 +82,13 @@ Define how your data will come in using these methods:
       /**
        * Contains item data to be filtered or displayed
        *
-       * @type {Object}
-       * @default {}
+       * @type {Array}
+       * @default []
        */
       items: {
-        type: Object,
+        type: Array,
         notify: true,
-        value: function() {return {};}
+        value: function() {return [];}
       },
       /**
        * This attribute allow us to show or hide the close button in search box to clear the search term
@@ -96,7 +96,7 @@ Define how your data will come in using these methods:
        * @type {Boolean}
        * @default true
        */
-      hideCloseButton: {
+      hideClearButton: {
         type: Boolean,
         value: true,
         notify: true
@@ -172,10 +172,10 @@ Define how your data will come in using these methods:
       this.items = [];
       this.forceRender();
       if (this.searchTerm.length > 0) {
-        this.hideCloseButton = false;
+        this.hideClearButton = false;
         this.set('items', this.filterItems());
       } else {
-        this.hideCloseButton = true;
+        this.hideClearButton = true;
         this.resetItems();
         this.set('items', this._items);
       }
@@ -188,7 +188,7 @@ Define how your data will come in using these methods:
      */
     clearSearchTerm: function () {
       this.set('searchTerm', '');
-      this.set('hideCloseButton', true);
+      this.set('hideClearButton', true);
       this.onInputChange();
     }
   });
