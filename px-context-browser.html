@@ -138,15 +138,7 @@ Custom property | Description | Default
                       <ul class$="{{UlSelected(item, selectedItem)}} list-bare level">
                         <template is="dom-repeat" id="level" items="{{item.children}}">
                           <li on-click="itemClickHandler" id$="[[getItemId(item)]]" class$="{{isItemSelected(item, selectedItem)}} flex flex--middle selectable-item" >
-                            <template is="dom-if" if="[[!showColumnTypeahead]]"><span class="flex__item item-label">{{_getItemLabel(item)}}</span></template>
-                            <template is="dom-if" if="[[showColumnTypeahead]]">
-                              <template is="dom-if" if="[[!item.searchTerm]]">
-                                <span class="flex__item item-label">{{_getItemLabel(item)}}</span>
-                              </template>
-                              <template is="dom-if" if="{{item.searchTerm}}">
-                                <span class="flex__item item-label">{{item.currentSearchLabel.prefix}}<span class="bold">{{item.currentSearchLabel.highlight}}</span>{{item.currentSearchLabel.suffix}}</span>
-                              </template>
-                            </template>
+                            <span class="flex__item item-label">{{_getItemLabel(item)}}</span>
                             <button class$="[[getItemOpenerClass(item)]] opener btn btn--small btn--tertiary" on-click="openClickHandler" key$="[[getItemId(item)]]">Open
                             </button>
                             <template is="dom-if" if="{{_hasChildren(item, showChevron)}}">

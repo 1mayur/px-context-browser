@@ -155,11 +155,6 @@ Define how your data will come in using these methods:
         if (termLocation > -1) {
           _items[i].searchTerm = this.searchTerm;
           _items[i].isTermFound = true;
-          _items[i].currentSearchLabel = {
-            prefix: _items[i].name.trim().substr(0, termLocation),
-            highlight: _items[i].name.trim().substr(termLocation, _searchTerm.length),
-            suffix: _items[i].name.trim().substr(termLocation + _searchTerm.length)
-          };
           _newItems.push(_items[i]);
         } else {
           _items[i].inSelectedPath = false; //clear the previous selection of item in the list
@@ -184,7 +179,6 @@ Define how your data will come in using these methods:
      */
     onInputChange: function () {
       this.items = [];
-      this.forceRender();
       if (this.searchTerm.length > 0) {
         this.hideClearButton = false;
         this.set('items', this.filterItems());
@@ -193,7 +187,6 @@ Define how your data will come in using these methods:
         this.resetItems();
         this.set('items', this._items);
       }
-      this.forceRender();
     },
     /**
      * This method is called when the user click on clear the search term icon in the search box remove filters from the item data
