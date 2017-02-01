@@ -110,10 +110,10 @@ Custom property | Description | Default
           </div>
           <div class="flex__item--middle">
             <h1 class="epsilon caps weight--normal u-m0" on-click="toggleColumnBrowser">
-              <span>{{openedItemName}}</span>
-              <iron-icon icon="fa:fa-caret-down"></iron-icon>
+              <span class$="context-browser-disabled-{{disabled}}">{{openedItemName}}</span>
+              <iron-icon icon="fa:fa-caret-down" hidden$="{{disabled}}"></iron-icon>
             </h1>
-            <span>{{selectedItemParent}}</span>
+            <span class$="context-browser-disabled-{{disabled}}">{{selectedItemParent}}</span>
           </div>
         </header>
         <div id="ruler" class$="{{isItemHidden(showColumnBrowser)}} flex flex--col">
@@ -132,14 +132,14 @@ Custom property | Description | Default
                   <div class="flex flex--col column push" data-column>
                     <div class="head">{{item.header}}</div>
                     <div class$="{{isItemHidden(showColumnBrowser)}} flex__item scroll-y" on-scroll="scrollEndHandler">
-                    <template is="dom-if" if="[[_toShowColumnTypeahead()]]">
+                    <template is="dom-if" if="[[showColumnTypeahead]]">
                       <px-context-browser-typeahead class="search-box-component" items="{{item.children}}"></px-context-browser-typeahead>
                     </template>
                       <ul class$="{{UlSelected(item, selectedItem)}} list-bare level">
                         <template is="dom-repeat" id="level" items="{{item.children}}">
                           <li on-click="itemClickHandler" id$="[[getItemId(item)]]" class$="{{isItemSelected(item, selectedItem)}} flex flex--middle selectable-item" >
-                            <template is="dom-if" if="[[!_toShowColumnTypeahead()]]"><span class="flex__item item-label">{{_getItemLabel(item)}}</span></template>
-                            <template is="dom-if" if="[[_toShowColumnTypeahead()]]">
+                            <template is="dom-if" if="[[!showColumnTypeahead]]"><span class="flex__item item-label">{{_getItemLabel(item)}}</span></template>
+                            <template is="dom-if" if="[[showColumnTypeahead]]">
                               <template is="dom-if" if="[[!item.searchTerm]]">
                                 <span class="flex__item item-label">{{_getItemLabel(item)}}</span>
                               </template>
@@ -326,12 +326,24 @@ Custom property | Description | Default
         },
         /**
          * This attributes allows you to enable the search box When this attribute is true
-         * @type {String Optional}
+         * @type {Boolean Optional}
          *
          * @default "false"
          *
          */
         showColumnTypeahead: {
+          type: Boolean,
+          value: false,
+          notify: true
+        },
+        /**
+         * This attributes allows you to disable the context browser
+         * @type {Boolean Optional}
+         *
+         * @default "false"
+         *
+         */
+        disabled: {
           type: Boolean,
           value: false
         }
@@ -537,7 +549,11 @@ Custom property | Description | Default
        * @private
        */
       isItemHidden: function(item) {
-          return (!item) ? "visuallyhidden" : '';
+          if (this.disabled) {
+              return  'visuallyhidden';
+          } else {
+            return (!item) ? "visuallyhidden" : '';
+          }
       },
       /**
        * this method checks whether the attribute hasChildren has been set to true, and if it has,
@@ -590,6 +606,12 @@ Custom property | Description | Default
           }
         }
         recursiveAddChildren(root.children);
+        // Send an event to typeahead when data is updated through browser context
+        if (_this.parentNodes && _this.parentNodes.length > 0) {
+            this.fire('px-browser-context-updated', {
+                items: _this.parentNodes[0].children
+            });
+        }
         // Repopulate the openedItemName and Breadcrumbs if we have a directContext
         if (this.selectedItem && this.selectedItem.name) {
           this.configureBreadcrumbs();
@@ -852,22 +874,15 @@ Custom property | Description | Default
       * @method toggleColumnBrowser
       */
        toggleColumnBrowser: function() {
-        this.showColumnBrowser = !this.showColumnBrowser;
+        if (this.disabled) {
+          this.showColumnBrowser = false;
+        } else {
+          this.showColumnBrowser = !this.showColumnBrowser;
+        }
 
         //fire an opening or closing event
         this.fire((this.showColumnBrowser) ? 'contextBrowserOpening' : 'contextBrowserClosing');
         this.spinner('hide');
-      },
-      /**
-       * Checks and returns boolean value if the typeahead is enabled or not for search box
-       * @private
-       */
-      _toShowColumnTypeahead: function () {
-        if (typeof this.showColumnTypeahead === 'boolean') {
-          return this.showColumnTypeahead;
-        } else {
-          return this.showColumnTypeahead == 'true';
-        }
       },
       /**
        * Called whenever the data is changed for context browser from typeahead

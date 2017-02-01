@@ -1,3 +1,27 @@
+v1.6.2
+==================
+* put in new demo
+
+v1.6.1
+==================
+* Update colors design to pick up new colors
+
+v1.6.0
+==================
+* merge PR #32, allow CB to be disabled
+
+v1.5.3
+==================
+* merge PR that fixed typeahead bug
+
+v1.5.2
+==================
+* changing ghp.sh to account for Alpha releases
+
+v1.5.1
+==================
+* fixed win8.1 ie11 test bug.
+
 v1.5.0
 ==================
 * add search per column (filter) capability
